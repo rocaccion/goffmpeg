@@ -43,6 +43,7 @@ type Mediafile struct {
 	muxDelay              string
 	seekUsingTsInput      bool
 	seekTimeInput         string
+	rtspTransport         string
 	inputPath             string
 	inputPipe             bool
 	inputPipeReader       io.ReadCloser
@@ -229,6 +230,10 @@ func (m *Mediafile) SetSeekUsingTsInput(val bool) {
 
 func (m *Mediafile) SetCopyTs(val bool) {
 	m.copyTs = val
+}
+
+func (m *Mediafile) SetRtspTransport(val string) {
+	m.rtspTransport = val
 }
 
 func (m *Mediafile) SetInputPath(val string) {
@@ -514,6 +519,10 @@ func (m *Mediafile) CopyTs() bool {
 	return m.copyTs
 }
 
+func (m *Mediafile) RtspTransport() string {
+	return m.rtspTransport
+}
+
 func (m *Mediafile) InputPath() string {
 	return m.inputPath
 }
@@ -659,6 +668,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"InputInitialOffset",
 		"HardwareAcceleration",
 		"RawInputArgs",
+		"RtspTransport",
 		"InputPath",
 		"InputPipe",
 		"HideBanner",
@@ -764,6 +774,13 @@ func (m *Mediafile) ObtainAspect() []string {
 func (m *Mediafile) ObtainHardwareAcceleration() []string {
 	if m.hwaccel != "" {
 		return []string{"-hwaccel", m.hwaccel}
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainRtspTransport() []string {
+	if m.rtspTransport != "" {
+		return []string{"-rtsp_transport", m.rtspTransport}
 	}
 	return nil
 }
@@ -1153,10 +1170,10 @@ func (m *Mediafile) ObtainCompressionLevel() []string {
 func (m *Mediafile) ObtainMapMetadata() []string {
 	if m.mapMetadata != "" {
 		return []string{"-map_metadata", m.mapMetadata}
-  }
-  return nil
+	}
+	return nil
 }
-    
+
 func (m *Mediafile) ObtainEncryptionKey() []string {
 	if m.encryptionKey != "" {
 		return []string{"-hls_key_info_file", m.encryptionKey}
