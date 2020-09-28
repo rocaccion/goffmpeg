@@ -44,6 +44,7 @@ type Mediafile struct {
 	seekUsingTsInput      bool
 	seekTimeInput         string
 	rtspTransport         string
+	socketTimeout         int
 	inputPath             string
 	inputPipe             bool
 	inputPipeReader       io.ReadCloser
@@ -234,6 +235,10 @@ func (m *Mediafile) SetCopyTs(val bool) {
 
 func (m *Mediafile) SetRtspTransport(val string) {
 	m.rtspTransport = val
+}
+
+func (m *Mediafile) SetSocketTimeout(val int) {
+	m.socketTimeout = val
 }
 
 func (m *Mediafile) SetInputPath(val string) {
@@ -523,6 +528,10 @@ func (m *Mediafile) RtspTransport() string {
 	return m.rtspTransport
 }
 
+func (m *Mediafile) GetSocketTimeout() int {
+	return m.socketTimeout
+}
+
 func (m *Mediafile) InputPath() string {
 	return m.inputPath
 }
@@ -669,6 +678,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"HardwareAcceleration",
 		"RawInputArgs",
 		"RtspTransport",
+		"SocketTimeout",
 		"InputPath",
 		"InputPipe",
 		"HideBanner",
@@ -781,6 +791,13 @@ func (m *Mediafile) ObtainHardwareAcceleration() []string {
 func (m *Mediafile) ObtainRtspTransport() []string {
 	if m.rtspTransport != "" {
 		return []string{"-rtsp_transport", m.rtspTransport}
+	}
+	return nil
+}
+
+func (m *Mediafile) ObtainSocketTimeout() []string {
+	if m.socketTimeout > 0 {
+		return []string{"-stimeout", strconv.Itoa(m.socketTimeout)}
 	}
 	return nil
 }
